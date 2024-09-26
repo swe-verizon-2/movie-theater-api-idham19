@@ -25,6 +25,18 @@ route.get("/:id", async (req, res, next) => {
   }
 });
 
+//Get user by id and all shows he watched
+route.get("/:id/shows", async(req, res, next) => {
+  try {
+    const userId= req.params.id
+    const findUser= await User.findByPk(userId,{include:Show})
+    res.json(findUser)
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 //Post request to create a new User
 route.post(
   "/",
@@ -88,7 +100,9 @@ route.put(
       .not()
       .isEmpty()
       .trim()
-      .withMessage("username is required").isEmail().withMessage("username should be an email"),
+      .withMessage("username is required")
+      .isEmail()
+      .withMessage("username should be an email"),
   ],
   [
     check("password")
