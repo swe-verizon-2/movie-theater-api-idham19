@@ -88,7 +88,7 @@ route.put(
       .not()
       .isEmpty()
       .trim()
-      .withMessage("username is required"),
+      .withMessage("username is required").isEmail().withMessage("username should be an email"),
   ],
   [
     check("password")

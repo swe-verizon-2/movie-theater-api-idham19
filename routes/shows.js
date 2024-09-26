@@ -7,8 +7,20 @@ const route = express.Router();
 
 route.get("/", async (req, res, next) => {
   try {
-    const getAllShows = await Show.findAll({ include: User });
-    res.json(getAllShows);
+    const { genre } = req.query;
+    let getAllShows;
+    if (genre) {
+      // If genre is provided, filter shows by genre
+      getAllShows = await Show.findAll({
+        where: {
+          genre: genre,
+        },
+        include: User, // Include associated users if needed
+      });
+    } else {
+      getAllShows = await Show.findAll({ include: User });
+    }
+    res.status(200).json(getAllShows);
   } catch (error) {
     console.error(error);
     next(error);
@@ -30,7 +42,7 @@ route.get("/:id", async (req, res, next) => {
 route.post(
   "/",
   [check("userId").not().isEmpty().trim().withMessage("userIds is required")],
-  [check("title").not().isEmpty().trim().withMessage("title is required")],
+  [check("title").not().isEmpty().trim().withMessage("title is required").isLength({min:1,max:25}).withMessage("title lenght should be max 25 characters")],
   [check("genre").not().isEmpty().trim().withMessage("genre is required")],
   async (req, res, next) => {
     try {
