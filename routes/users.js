@@ -53,7 +53,10 @@ route.post(
       const { username, password, showId } = req.body; //
 
       // Create the User instance
-      const newUser = await User.create({ name: "fella", password: "1215474" });
+      const newUser = await User.create({
+        username: username,
+        password: password,
+      });
 
       // Find all Shows by their ids
       const shows = await Show.findAll({
