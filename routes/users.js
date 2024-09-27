@@ -26,11 +26,11 @@ route.get("/:id", async (req, res, next) => {
 });
 
 //Get user by id and all shows he watched
-route.get("/:id/shows", async(req, res, next) => {
+route.get("/:id/shows", async (req, res, next) => {
   try {
-    const userId= req.params.id
-    const findUser= await User.findByPk(userId,{include:Show})
-    res.json(findUser)
+    const userId = req.params.id;
+    const findUser = await User.findByPk(userId, { include: Show });
+    res.json(findUser);
   } catch (error) {
     console.error(error);
     next(error);
@@ -124,6 +124,25 @@ route.put(
     }
   }
 );
+
+route.put("/:userId/shows/:showId", async (req, res, next) => {
+  try {
+    const { userId, showId } = req.params;
+
+    const user = await User.findByPk(userId);
+    const show = await Show.findByPk(showId);
+    await user.addShow(show); 
+    res
+      .status(200)
+      .json({
+        message: `User ${userId} is now associated with show ${showId}`,
+      });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 route.delete("/:id", async (req, res, next) => {
   try {
     const userId = req.params.id;

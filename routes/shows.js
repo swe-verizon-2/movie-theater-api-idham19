@@ -120,6 +120,8 @@ route.put(
   }
 );
 
+
+
 route.delete("/:id", async (req, res, next) => {
   try {
     const showId = req.params.id;
