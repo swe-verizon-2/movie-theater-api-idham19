@@ -120,7 +120,37 @@ route.put(
   }
 );
 
-
+route.put(
+  "/:id/available",
+  [
+    check("available")
+      .not()
+      .isEmpty()
+      .trim()
+      .withMessage("available is require"),
+  ],
+  async (req, res, next) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        res.status(400).json({ errors: errors.array() });
+      }
+      const showId = req.params.id;
+      const available = req.body.available === "true";
+      const findShow = await Show.findByPk(showId);
+      findShow.available = available;
+      await findShow.save();
+      res.status(200).json({
+        message: `Show ${showId} updated to ${
+          available === true ? "available" : "unavailable"
+        }`,
+      });
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  }
+);
 
 route.delete("/:id", async (req, res, next) => {
   try {
