@@ -30,8 +30,19 @@ route.get("/", async (req, res, next) => {
 route.get("/:id", async (req, res, next) => {
   try {
     const showId = req.params.id;
-    const findShowById = await Show.findByPk(showId, { include: User });
+    const findShowById = await Show.findByPk(showId);
     res.status(200).json(findShowById);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+route.get("/:id/users", async (req, res, next) => {
+  try {
+    const showId = req.params.id;
+    const findShow = await Show.findByPk(showId, { include: User });
+    res.json(findShow);
   } catch (error) {
     console.error(error);
     next(error);
@@ -42,7 +53,15 @@ route.get("/:id", async (req, res, next) => {
 route.post(
   "/",
   [check("userId").not().isEmpty().trim().withMessage("userIds is required")],
-  [check("title").not().isEmpty().trim().withMessage("title is required").isLength({min:1,max:25}).withMessage("title lenght should be max 25 characters")],
+  [
+    check("title")
+      .not()
+      .isEmpty()
+      .trim()
+      .withMessage("title is required")
+      .isLength({ min: 1, max: 25 })
+      .withMessage("title lenght should be max 25 characters"),
+  ],
   [check("genre").not().isEmpty().trim().withMessage("genre is required")],
   async (req, res, next) => {
     try {

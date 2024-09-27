@@ -17,7 +17,7 @@ route.get("/", async (req, res, next) => {
 route.get("/:id", async (req, res, next) => {
   try {
     const userId = req.params.id;
-    const findUserById = await User.findByPk(userId, { include: Show });
+    const findUserById = await User.findByPk(userId);
     res.status(200).json(findUserById);
   } catch (error) {
     console.error(error);
